@@ -63,7 +63,8 @@ def plot_dendrogram(model, **kwargs):
 
 
 # setting distance_threshold=0 ensures we compute the full tree.
-model = cluster.AgglomerativeClustering(distance_threshold=0, linkage='average', n_clusters=None)
+#Changer le linkage pour voir les différences
+model = cluster.AgglomerativeClustering(distance_threshold=0, linkage='single', n_clusters=None)
 
 model = model.fit(datanp)
 plt.figure(figsize=(12, 12))
@@ -81,7 +82,7 @@ plt.show()
 # 
 tps1 = time.time()
 seuil_dist = 10
-model = cluster.AgglomerativeClustering(distance_threshold=seuil_dist, linkage='average', n_clusters=None)
+model = cluster.AgglomerativeClustering(distance_threshold=seuil_dist, linkage='single', n_clusters=None)
 model = model.fit(datanp)
 tps2 = time.time()
 labels = model.labels_
@@ -98,9 +99,9 @@ print("nb clusters =",k,", nb feuilles = ", leaves, " runtime = ", round((tps2 -
 ###
 # FIXER le nombre de clusters
 ###
-k=3
+k=2
 tps1 = time.time()
-model = cluster.AgglomerativeClustering(linkage='average', n_clusters=k)
+model = cluster.AgglomerativeClustering(linkage='single', n_clusters=k)
 model = model.fit(datanp)
 tps2 = time.time()
 labels = model.labels_
@@ -119,4 +120,4 @@ print("nb clusters =",kres,", nb feuilles = ", leaves, " runtime = ", round((tps
 
 
 #######################################################################
-
+#On remarque que le linkage single est pas mal pour les spirales !! (logique)

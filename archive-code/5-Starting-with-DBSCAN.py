@@ -11,7 +11,7 @@ from sklearn import preprocessing
 ##################################################################
 # Exemple : DBSCAN Clustering
 
-
+"""
 path = './artificial/'
 name="xclara.arff"
 
@@ -96,5 +96,54 @@ plt.title("Données après clustering DBSCAN (2) - Epislon= "+str(epsilon)+" Min
 plt.show()
 
 
+print("------------------------------------------------------")
+print("Appel DBSCAN (3) sur données standardisees ... ")
+tps1 = time.time()
+epsilon=0.15 #0.05
+min_pts=5 # 10
+model = cluster.DBSCAN(eps=epsilon, min_samples=min_pts)
+model.fit(data_scaled)
+
+tps2 = time.time()
+labels = model.labels_
+# Number of clusters in labels, ignoring noise if present.
+n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+n_noise = list(labels).count(-1)
+print('Number of clusters: %d' % n_clusters)
+print('Number of noise points: %d' % n_noise)
+
+plt.scatter(f0_scaled, f1_scaled, c=labels, s=8)
+plt.title("Données après clustering DBSCAN (3) - Epislon= "+str(epsilon)+" MinPts= "+str(min_pts))
+plt.show()
+
+"""
+def neigh(name):
+    
+    path = './artificial/'
+
+    #path_out = './fig/'
+    databrut = arff.loadarff(open(path+str(name), 'r'))
+    datanp = np.array([[x[0],x[1]] for x in databrut[0]])     #Distances aux k plus proches voisins
+# Donnees dans X
+    k = 2
+    neigh = NearestNeighbors ( n_neighbors = k )
+    neigh.fit( datanp )
+    distances , indices = neigh.kneighbors(datanp)
+    # distance moyenne sur les k plus proches voisins
+    # en retirant le point " origine "
+    newDistances = np.asarray( [ np.average( distances[ i ][ 1 : ] ) for i in range (0 , distances.shape[0]) ] )
+    # trier par ordre croissant
+    distancetrie = np.sort( newDistances )
+    plt.title( " Plus proches voisins " + str( k ) )
+    plt.plot( distancetrie ) 
+    plt.show()
 
 
+name = "xclara.arff"
+neigh(name)
+
+#Augmenter le nombre depoint augmente le nombre de cluster, et diminuer l'epsilon augmente aussi le nombre de cluster
+
+#epsilon = 0.15 et min_pts = 5 donne le meilleur résultat pour xclara.arff
+
+#DBSCAN probleme avec grand nombre de points + temps de calcul important st900.arff, zelnik4.arff car bcp de outliers 
