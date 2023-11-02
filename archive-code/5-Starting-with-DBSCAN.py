@@ -7,13 +7,14 @@ from sklearn import cluster
 from sklearn import metrics
 from sklearn.neighbors import NearestNeighbors
 from sklearn import preprocessing
+import hdbscan
 
 ##################################################################
 # Exemple : DBSCAN Clustering
 
-
+"""
 path = './artificial/'
-name="xclara.arff"
+name="3-spiral.arff"
 
 #path_out = './fig/'
 databrut = arff.loadarff(open(path+str(name), 'r'))
@@ -115,7 +116,7 @@ print('Number of noise points: %d' % n_noise)
 plt.scatter(f0_scaled, f1_scaled, c=labels, s=8)
 plt.title("Données après clustering DBSCAN (3) - Epislon= "+str(epsilon)+" MinPts= "+str(min_pts))
 plt.show()
-
+"""
 
 def neigh(name):
     
@@ -138,9 +139,61 @@ def neigh(name):
     plt.plot( distancetrie ) 
     plt.show()
 
+def dbscan(name, eps, nb_point) :
+    path = './artificial/'
+    databrut = arff.loadarff(open(path+str(name), 'r'))
+    datanp = np.array([[x[0],x[1]] for x in databrut[0]])
+    scaler = preprocessing.StandardScaler().fit(datanp)
+    data_scaled = scaler.transform(datanp)
+    f0_scaled = data_scaled[:,0] # tous les élements de la première colonne
+    f1_scaled = data_scaled[:,1] # tous les éléments de la deuxième colonne
+    tps1 = time.time()
+    model = cluster.DBSCAN(eps=eps, min_samples=nb_point)
+    model.fit(data_scaled)
 
-name = "xclara.arff"
-neigh(name)
+    tps2 = time.time()
+    print("Execution time : ", tps1-tps2)
+    labels = model.labels_
+    # Number of clusters in labels, ignoring noise if present.
+    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+    n_noise = list(labels).count(-1)
+    print('Number of clusters: %d' % n_clusters)
+    print('Number of noise points: %d' % n_noise)
+
+    plt.scatter(f0_scaled, f1_scaled, c=labels, s=8)
+    plt.title("Données après clustering DBSCAN (3) - Epislon= "+str(eps)+" MinPts= "+str(nb_point))
+    plt.show()
+
+
+
+def hdbscan(name, min_cluster_size):
+    path = './artificial/'
+    databrut = arff.loadarff(open(path + str(name), 'r'))
+    datanp = np.array([x[0], x[1]] for x in databrut[0])
+    scaler = preprocessing.StandardScaler().fit(datanp)
+    data_scaled = scaler.transform(datanp)
+
+    tps1 = time.time()
+    clusterer = hdbscan.HDBSCAN(min_cluster_size=min_cluster_size)
+    labels = clusterer.fit_predict(data_scaled)
+    tps2 = time.time()
+
+    print("Execution time : ", tps2 - tps1)
+    
+    # Afficher le nombre de clusters (clusters différents de -1, qui représente le bruit)
+    n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+    n_noise = list(labels).count(-1)
+
+    print('Number of clusters: %d' % n_clusters)
+    print('Number of noise points: %d' % n_noise)
+
+    plt.scatter(data_scaled[:, 0], data_scaled[:, 1], c=labels, s=8)
+    plt.title("Données après clustering HDBSCAN - Min Cluster Size = " + str(min_cluster_size))
+    plt.show()
+
+
+name = "3-spiral.arff"
+dbscan(name, 0.5, 5)
 
 #Augmenter le nombre depoint augmente le nombre de cluster, et diminuer l'epsilon augmente aussi le nombre de cluster
 
