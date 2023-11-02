@@ -11,7 +11,7 @@ from sklearn import preprocessing
 ##################################################################
 # Exemple : DBSCAN Clustering
 
-"""
+
 path = './artificial/'
 name="xclara.arff"
 
@@ -116,7 +116,7 @@ plt.scatter(f0_scaled, f1_scaled, c=labels, s=8)
 plt.title("Données après clustering DBSCAN (3) - Epislon= "+str(epsilon)+" MinPts= "+str(min_pts))
 plt.show()
 
-"""
+
 def neigh(name):
     
     path = './artificial/'
@@ -125,7 +125,7 @@ def neigh(name):
     databrut = arff.loadarff(open(path+str(name), 'r'))
     datanp = np.array([[x[0],x[1]] for x in databrut[0]])     #Distances aux k plus proches voisins
 # Donnees dans X
-    k = 2
+    k = 3
     neigh = NearestNeighbors ( n_neighbors = k )
     neigh.fit( datanp )
     distances , indices = neigh.kneighbors(datanp)

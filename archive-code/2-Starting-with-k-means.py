@@ -238,7 +238,7 @@ def evaluate_minibatch(nom) :
     moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
     print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
 
-    moyenne_sep, min_sep, max_sep = separation(model.cluster_centers_)
+    moyenne_sep, min_sep, max_sep = separation(model)
     print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
     showcluster(datanp, model)
 
@@ -314,7 +314,7 @@ evaluate(nom)
 nom = "2sp2glob.arff"
 evaluate(nom)
 """
-"""
+
 #2.5
 
 nom = "2d-4c.arff"
@@ -327,4 +327,3 @@ evaluate_minibatch(nom)
 nom = "2sp2glob.arff"
 evaluate_minibatch(nom)
 #Même résultat
-"""

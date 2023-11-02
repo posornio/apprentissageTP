@@ -85,7 +85,6 @@ def silhouette_par_k(datanp, methode) :
         # informations sur le clustering obtenu
         labels = model.labels_
         silhouette = metrics.silhouette_score(datanp, labels)
-        print(silhouette)
         if (silhouette > max) :
             max = silhouette
             k_max = k
@@ -187,7 +186,7 @@ print("nb clusters =",kres,", nb feuilles = ", leaves, " runtime = ", round((tps
 name = "xclara.arff"
 evaluate(name)
 """
-"""
+
 #3.3
 #Single, average
 name = "xclara.arff"
@@ -198,4 +197,4 @@ name = "dense-disk-3000.arff"
 evaluate(name)
 name = "smile2.arff"
 evaluate(name)  
-"""
+
