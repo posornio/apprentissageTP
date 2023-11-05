@@ -119,9 +119,13 @@ def silhouette_par_k(datanp) :
     now = time.time()
     silhouettes = []
     max = 0 
+    total_time = 0
     for k in range(2,12) :
+        t1 = time.time()
         model = cluster.KMeans(n_clusters=k, init='k-means++', n_init=1)
         model.fit(datanp)
+        total_time +=  time.time()-t1
+        
         # informations sur le clustering obtenu
         labels = model.labels_
         silhouette = metrics.silhouette_score(datanp, labels)
@@ -129,20 +133,26 @@ def silhouette_par_k(datanp) :
         if (silhouette > max) :
             max = silhouette
             k_max = k
+        
+    print("TEMPS POUR K-MEANS : ", total_time)
     """"
     plt.plot(range(2,12),silhouettes)
     plt.title("Silhouette en fonction du nombre de clusters")
     plt.show()
     """
-    print("runtime silhouette = ", (time.time() - now),"s")
+    #print("runtime silhouette = ", (time.time() - now),"s")
     return k_max
 
 def silhouette_par_k_minibatch(datanp) :
     silhouettes = []
     max = 0 
+    total_time = 0 
     for k in range(2,12) :
+        t1 = time.time()
         model = cluster.MiniBatchKMeans(n_clusters=k, init='k-means++', n_init=1)
         model.fit(datanp)
+        total_time +=  time.time()-t1
+        
         # informations sur le clustering obtenu
         labels = model.labels_
         silhouette = metrics.silhouette_score(datanp, labels)
@@ -150,6 +160,8 @@ def silhouette_par_k_minibatch(datanp) :
         if (silhouette > max) :
             max = silhouette
             k_max = k
+        
+    print("TEMPS POUR MINIBATCH : ", total_time)
     """"
     plt.plot(range(2,12),silhouettes)
     plt.title("Silhouette en fonction du nombre de clusters")
@@ -221,26 +233,27 @@ def showcluster(datanp, model) :
 def evaluate(nom) :
     datanp = init_data(nom)
     k = silhouette_par_k(datanp)
-    print ("k = ", k)
+    #print ("k = ", k)
     model= trainings_kmeans(k, datanp)
     moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
-    print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
+    #print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
 
     moyenne_sep, min_sep, max_sep = separation(model)
-    print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
+    #print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
     showcluster(datanp, model)
 
 def evaluate_minibatch(nom) :
     datanp = init_data(nom)
     k = silhouette_par_k_minibatch(datanp)
-    print ("k = ", k)
+    #print ("k = ", k)
     model= trainings_minibatch(k, datanp)
     moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
-    print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
+    #print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
 
     moyenne_sep, min_sep, max_sep = separation(model)
-    print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
+    #print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
     showcluster(datanp, model)
+    
 
 
 """
@@ -303,7 +316,7 @@ print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
 """
 #2.4
 
-#Un pour lequel ça marche : (Le deuxièeme est celui du 2.3)
+#Un pour lequel ça marche : (Le deuxième est celui du 2.3)
 nom = "2d-4c.arff"
 evaluate(nom)
 
@@ -323,7 +336,13 @@ evaluate(nom)
 #c'était pareil
 nom = "3-spiral.arff"
 evaluate_minibatch(nom)
+evaluate(nom)
 #résultat différent mais toujours mauvais
 nom = "2sp2glob.arff"
 evaluate_minibatch(nom)
+evaluate(nom)
 #Même résultat
+nom = "birch-rg1.arff"
+evaluate_minibatch(nom)
+evaluate(nom)
+#HYPER IMPORTANT !! C'est lui qui prouve que minibatch est plus rapide (faut que le dataset soit assez gross)
