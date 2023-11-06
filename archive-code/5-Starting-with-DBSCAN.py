@@ -166,7 +166,7 @@ def dbscan(name, eps, nb_point) :
 
 
 
-def hdbscan(name, min_cluster_size):
+def HDBscan(name, min_cluster_size):
     path = './artificial/'
     databrut = arff.loadarff(open(path + str(name), 'r'))
     datanp = np.array([x[0], x[1]] for x in databrut[0])
@@ -194,6 +194,7 @@ def hdbscan(name, min_cluster_size):
 
 name = "3-spiral.arff"
 dbscan(name, 0.5, 5)
+HDBscan(name, 5)
 
 #Augmenter le nombre depoint augmente le nombre de cluster, et diminuer l'epsilon augmente aussi le nombre de cluster
 

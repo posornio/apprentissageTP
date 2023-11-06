@@ -108,11 +108,11 @@ def inertie_par_k(datanp) :
         # informations sur le clustering obtenu
         inertie = model.inertia_
         inerties[k-1] = inertie
-    """
+    
     plt.plot(range(1,12),inerties)
     plt.title("Inertie en fonction du nombre de clusters")
     plt.show()
-    """
+    
     print("runtime inertie = ", (time.time() - now),"s")
 
 def silhouette_par_k(datanp) :
@@ -120,7 +120,7 @@ def silhouette_par_k(datanp) :
     silhouettes = []
     max = 0 
     total_time = 0
-    for k in range(2,12) :
+    for k in range(2,42) :
         t1 = time.time()
         model = cluster.KMeans(n_clusters=k, init='k-means++', n_init=1)
         model.fit(datanp)
@@ -135,11 +135,11 @@ def silhouette_par_k(datanp) :
             k_max = k
         
     print("TEMPS POUR K-MEANS : ", total_time)
-    """"
-    plt.plot(range(2,12),silhouettes)
+    
+    plt.plot(range(2,42),silhouettes)
     plt.title("Silhouette en fonction du nombre de clusters")
     plt.show()
-    """
+    
     #print("runtime silhouette = ", (time.time() - now),"s")
     return k_max
 
@@ -293,43 +293,53 @@ print("Inertie moyenne : ", inertie)
 print("Inertie moyenne par cluster ",(inertie_cluster(datanp,labels,k)))
 print(np.sum(inertie_cluster(datanp,labels,k)))
 """
-""""
+"""
 #On est sur 2.3
 # Analyse les resultats:  
 datanp = init_data("2d-4c-no9.arff")
 inertie_par_k(datanp)
-
-print("Meilleur k pour silhouette = ", silhouette_par_k(datanp))
 k = silhouette_par_k(datanp)
+print("Meilleur k pour silhouette = ", k)
 model= trainings_kmeans(k, datanp)
-moyenne_reg,min_reg,max_reg = regroupement(model.labels_, model.cluster_centers_, datanp)
+moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
 print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
 
-moyenne_sep, min_sep, max_sep = separation(model.cluster_centers_)
+moyenne_sep, min_sep, max_sep = separation(model)
 print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
 
 #On remarque que silhouette est beaucoup plus long, mais permet de sortir automatiquement le résulat, car il suffit de trouver le max.
-"""
 
+"""
 #Silhouette beaucoup plus long ! A noter
 
-"""
+
 #2.4
 
 #Un pour lequel ça marche : (Le deuxième est celui du 2.3)
 nom = "2d-4c.arff"
 evaluate(nom)
 
+nom = "twodiamonds.arff"
+evaluate(nom)
+
+nom = "fourty.arff"
+evaluate(nom)
+
 #1 pour lequel ça marche pas :
 nom = "3-spiral.arff"
 evaluate(nom)
+
+nom = "disk-4600n.arff"
+evaluate(nom)
+
+
 #Un intermediaire :
 nom = "2sp2glob.arff"
 evaluate(nom)
-"""
+
 
 #2.5
-
+"""
 nom = "2d-4c.arff"
 evaluate_minibatch(nom)
 evaluate(nom)
@@ -346,3 +356,4 @@ nom = "birch-rg1.arff"
 evaluate_minibatch(nom)
 evaluate(nom)
 #HYPER IMPORTANT !! C'est lui qui prouve que minibatch est plus rapide (faut que le dataset soit assez gross)
+"""
