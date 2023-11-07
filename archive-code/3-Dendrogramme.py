@@ -12,12 +12,7 @@ from scipy.cluster.hierarchy import dendrogram
 
 
 
-path = './artificial/'
-name="xclara.arff"
 
-#path_out = './fig/'
-databrut = arff.loadarff(open(path+str(name), 'r'))
-datanp = np.array([[x[0],x[1]] for x in databrut[0]])
 
 
 # PLOT datanp (en 2D) - / scatter plot
@@ -25,19 +20,19 @@ datanp = np.array([[x[0],x[1]] for x in databrut[0]])
 # EX : 
 # - pour t1=t[:,0] --> [1, 3, 5, 7]
 # - pour t2=t[:,1] --> [2, 4, 6, 8]
+"""
+
 print("---------------------------------------")
 print("Affichage données initiales            "+ str(name))
 f0 = datanp[:,0] # tous les élements de la première colonne
 f1 = datanp[:,1] # tous les éléments de la deuxième colonne
-
-#plt.figure(figsize=(6, 6))
+plt.figure(figsize=(6, 6))
 plt.scatter(f0, f1, s=8)
 plt.title("Donnees initiales : "+ str(name))
-#plt.savefig(path_out+"Plot-kmeans-code1-"+str(name)+"-init.jpg",bbox_inches='tight', pad_inches=0.1)
+plt.savefig(path_out+"Plot-kmeans-code1-"+str(name)+"-init.jpg",bbox_inches='tight', pad_inches=0.1)
 plt.show()
-
+"""
 #################################################
-from scipy.cluster.hierarchy import dendrogram
 
 def plot_dendrogram(model, **kwargs):
     # Create linkage matrix and then plot the dendrogram
@@ -64,22 +59,39 @@ def plot_dendrogram(model, **kwargs):
 
 # setting distance_threshold=0 ensures we compute the full tree.
 #Changer le linkage pour voir les différences
-model = cluster.AgglomerativeClustering(distance_threshold=0, linkage='single', n_clusters=None)
 
-model = model.fit(datanp)
-plt.figure(figsize=(12, 12))
-plt.title("Hierarchical Clustering Dendrogram")
-# plot the top p levels of the dendrogram
-plot_dendrogram(model) #, truncate_mode="level", p=5)
-plt.xlabel("Number of points in node (or index of point if no parenthesis).")
-plt.show()
+def saveFigs(method):
+    path = './artificial/'
+    names = ["xclara.arff","square1.arff"]
+    for name in names:
+        path_out = './fig/'
+        databrut = arff.loadarff(open(path+str(name), 'r'))
+        datanp = np.array([[x[0],x[1]] for x in databrut[0]])
+        model = cluster.AgglomerativeClustering(distance_threshold=0, linkage= method, n_clusters=None)
 
+        model = model.fit(datanp)
+        f0 = datanp[:,0] # tous les élements de la première colonne
+        f1 = datanp[:,1] # tous les éléments de la deuxième colonne
+        labels = model.labels_
 
+        fig = plt.figure(figsize=(12, 12))
+        plt.scatter(f0, f1, s=8)
+        plt.title("Hierarchical Clustering Dendrogram for "+str(name) + " with "+method+" linkage")
+        # plot the top p levels of the dendrogram
+        plot_dendrogram(model) #, truncate_mode="level", p=5)
+        plt.xlabel("Number of points in node (or index of point if no parenthesis).")
+        
+        fig.savefig("figsDendrogramme-"+method+"-dendrogram-"+str(name)+".jpg",bbox_inches='tight', pad_inches=0.1)
+        print("fig saved : "+method+"-dendrogram-"+str(name)+".jpg")
 
+linkages = ["single","complete","average","ward"]
 
+for method in linkages:
+    saveFigs(method)
 
 ### FIXER la distance
 # 
+"""
 tps1 = time.time()
 seuil_dist = 10
 model = cluster.AgglomerativeClustering(distance_threshold=seuil_dist, linkage='single', n_clusters=None)
@@ -118,6 +130,6 @@ plt.show()
 print("nb clusters =",kres,", nb feuilles = ", leaves, " runtime = ", round((tps2 - tps1)*1000,2),"ms")
 
 
-
+"""
 #######################################################################
 #On remarque que le linkage single est pas mal pour les spirales !! (logique)
