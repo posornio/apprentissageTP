@@ -9,8 +9,6 @@ from sklearn import metrics
 from sklearn.metrics.pairwise import euclidean_distances
 
 
-
-
 ###################################################################
 # Exemple : Agglomerative Clustering
 
@@ -77,21 +75,22 @@ def print_cluster(model, datanp) :
 
 
 def silhouette_par_k(datanp, methode) :
-    max = float('-inf')
+    maxi = float('-inf')
     k_max=0
     for k in range(2,12) :
         model = cluster.AgglomerativeClustering(linkage=methode, n_clusters=k)
         model.fit(datanp)
-        # informations sur le clustering obtenu
         labels = model.labels_
         silhouette = metrics.silhouette_score(datanp, labels)
-        if (silhouette > max) :
-            max = silhouette
+        if (silhouette > maxi) :
+            maxi = silhouette
             k_max = k
-    
     return k_max
 
+
 def evaluate(name) :
+    print("--------------------------------------------------")
+    print("EVALUATION : ", name)
     path = './artificial/'
     databrut = arff.loadarff(open(path+str(name), 'r'))
     datanp = np.array([[x[0],x[1]] for x in databrut[0]])
@@ -103,7 +102,7 @@ def evaluate(name) :
         print("Meilleur K = ", k)
         model = cluster.AgglomerativeClustering(linkage=methode, n_clusters=k)
         model.fit(datanp)
-        print_cluster(model, datanp)
+        #print_cluster(model, datanp)
         """
         moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
         print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
@@ -189,12 +188,11 @@ evaluate(name)
 
 #3.3
 #Single, average
-name = "xclara.arff"
+
+name = "wingnut.arff"
 evaluate(name)
-name = "cluto-t5-8k.arff"
+name = "complex8.arff"
 evaluate(name)
-name = "dense-disk-3000.arff"
-evaluate(name)
-name = "smile2.arff"
-evaluate(name)  
+#name = "elly-2d10c13s.arff"
+#evaluate(name)
 

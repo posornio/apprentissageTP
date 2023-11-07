@@ -62,7 +62,7 @@ def plot_dendrogram(model, **kwargs):
 
 def saveFigs(method):
     path = './artificial/'
-    names = ["xclara.arff","square1.arff"]
+    names = ["3-spiral.arff"]
     for name in names:
         path_out = './fig/'
         databrut = arff.loadarff(open(path+str(name), 'r'))
