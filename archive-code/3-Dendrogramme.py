@@ -7,37 +7,7 @@ from sklearn import cluster
 from sklearn import metrics
 from scipy.cluster.hierarchy import dendrogram
 
-##################################################################
-# Exemple :  Dendrogramme and Agglomerative Clustering
-
-
-
-
-
-
-# PLOT datanp (en 2D) - / scatter plot
-# Extraire chaque valeur de features pour en faire une liste
-# EX : 
-# - pour t1=t[:,0] --> [1, 3, 5, 7]
-# - pour t2=t[:,1] --> [2, 4, 6, 8]
-"""
-
-print("---------------------------------------")
-print("Affichage données initiales            "+ str(name))
-f0 = datanp[:,0] # tous les élements de la première colonne
-f1 = datanp[:,1] # tous les éléments de la deuxième colonne
-plt.figure(figsize=(6, 6))
-plt.scatter(f0, f1, s=8)
-plt.title("Donnees initiales : "+ str(name))
-plt.savefig(path_out+"Plot-kmeans-code1-"+str(name)+"-init.jpg",bbox_inches='tight', pad_inches=0.1)
-plt.show()
-"""
-#################################################
-
 def plot_dendrogram(model, **kwargs):
-    # Create linkage matrix and then plot the dendrogram
-
-    # create the counts of samples under each node
     counts = np.zeros(model.children_.shape[0])
     n_samples = len(model.labels_)
     for i, merge in enumerate(model.children_):
@@ -52,13 +22,7 @@ def plot_dendrogram(model, **kwargs):
     linkage_matrix = np.column_stack(
         [model.children_, model.distances_, counts]
     ).astype(float)
-
-    # Plot the corresponding dendrogram
     dendrogram(linkage_matrix) #, **kwargs)
-
-
-# setting distance_threshold=0 ensures we compute the full tree.
-#Changer le linkage pour voir les différences
 
 def saveFigs(method):
     path = './artificial/'
@@ -77,10 +41,8 @@ def saveFigs(method):
         fig = plt.figure(figsize=(12, 12))
         plt.scatter(f0, f1, s=8)
         plt.title("Hierarchical Clustering Dendrogram for "+str(name) + " with "+method+" linkage")
-        # plot the top p levels of the dendrogram
-        plot_dendrogram(model) #, truncate_mode="level", p=5)
+        plot_dendrogram(model) 
         plt.xlabel("Number of points in node (or index of point if no parenthesis).")
-        
         fig.savefig("figsDendrogramme-"+method+"-dendrogram-"+str(name)+".jpg",bbox_inches='tight', pad_inches=0.1)
         print("fig saved : "+method+"-dendrogram-"+str(name)+".jpg")
 
@@ -89,8 +51,11 @@ linkages = ["single","complete","average","ward"]
 for method in linkages:
     saveFigs(method)
 
-### FIXER la distance
-# 
+
+
+
+#Brouillon :
+
 """
 tps1 = time.time()
 seuil_dist = 10
@@ -108,9 +73,6 @@ plt.show()
 print("nb clusters =",k,", nb feuilles = ", leaves, " runtime = ", round((tps2 - tps1)*1000,2),"ms")
 
 
-###
-# FIXER le nombre de clusters
-###
 k=2
 tps1 = time.time()
 model = cluster.AgglomerativeClustering(linkage='single', n_clusters=k)
@@ -131,5 +93,3 @@ print("nb clusters =",kres,", nb feuilles = ", leaves, " runtime = ", round((tps
 
 
 """
-#######################################################################
-#On remarque que le linkage single est pas mal pour les spirales !! (logique)

@@ -1,8 +1,3 @@
-"""
-Created on 2023/09/11
-
-@author: huguet
-"""
 import os
 os.environ["OMP_NUM_THREADS"] = '4'
 
@@ -15,8 +10,6 @@ from sklearn import cluster
 from sklearn import metrics
 import time
 
-##################################################################
-# Exemple :  k-Means Clustering
 
 def distance(a, b) :
     return np.sqrt(np.sum((a-b)**2))
@@ -175,30 +168,6 @@ def init_data(name) :
     datanp = np.array([[x[0],x[1]] for x in databrut[0]])
     return datanp
 
-"""
-# PLOT datanp (en 2D) - / scatter plot
-# Extraire chaque valeur de features pour en faire une liste
-# EX : 
-# - pour t1=t[:,0] --> [1, 3, 5, 7]
-# - pour t2=t[:,1] --> [2, 4, 6, 8]
-print("---------------------------------------")
-print("Affichage données initiales            "+ str(name))
-f0 = datanp[:,0] # tous les élements de la première colonne
-f1 = datanp[:,1] # tous les éléments de la deuxième colonne
-
-#plt.figure(figsize=(6, 6))
-plt.scatter(f0, f1, s=8)
-plt.title("Donnees initiales : "+ str(name))
-#plt.savefig(path_out+"Plot-kmeans-code1-"+str(name)+"-init.jpg",bbox_inches='tight', pad_inches=0.1)
-#plt.show()
-
-# Run clustering method for a given number of clusters
-print("------------------------------------------------------")
-print("Appel KMeans pour une valeur de k fixée")
-tps1 = time.time()
-
-k= 4
-"""
 
 def trainings_kmeans(k, datanp) :
     model = cluster.KMeans(n_clusters=k, init='k-means++', n_init=1)
@@ -229,7 +198,7 @@ def showcluster(datanp, model) :
     #plt.savefig(path_out+"Plot-kmeans-code1-"+str(name)+"-cluster.jpg",bbox_inches='tight', pad_inches=0.1)
     plt.show()
 
-
+#La fonction evaluate nous permet d'évaluer k-means sur les différents datasets
 def evaluate(nom) :
     datanp = init_data(nom)
     k = silhouette_par_k(datanp)
@@ -242,6 +211,8 @@ def evaluate(nom) :
     #print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
     showcluster(datanp, model)
 
+
+#La fonction evaluate nous permet d'évaluer minibatch sur les différents datasets
 def evaluate_minibatch(nom) :
     datanp = init_data(nom)
     k = silhouette_par_k_minibatch(datanp)
@@ -294,7 +265,7 @@ print("Inertie moyenne par cluster ",(inertie_cluster(datanp,labels,k)))
 print(np.sum(inertie_cluster(datanp,labels,k)))
 """
 """
-#On est sur 2.3
+#2.3
 # Analyse les resultats:  
 datanp = init_data("2d-4c-no9.arff")
 inertie_par_k(datanp)
@@ -302,7 +273,7 @@ k = silhouette_par_k(datanp)
 print("Meilleur k pour silhouette = ", k)
 model= trainings_kmeans(k, datanp)
 moyenne_reg,min_reg,max_reg = regroupement(k, model, datanp)
-print("REGROUPEMENT : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
+print("Score de Regroupement : moy = ", moyenne_reg, "min = ", min_reg, "max = ",max_reg)
 
 moyenne_sep, min_sep, max_sep = separation(model)
 print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
@@ -310,7 +281,7 @@ print("SEPARATION : moy = ", moyenne_sep, "min = ", min_sep, "max = ",max_sep)
 #On remarque que silhouette est beaucoup plus long, mais permet de sortir automatiquement le résulat, car il suffit de trouver le max.
 
 """
-#Silhouette beaucoup plus long ! A noter
+
 
 
 #2.4
@@ -355,5 +326,4 @@ evaluate(nom)
 nom = "birch-rg1.arff"
 evaluate_minibatch(nom)
 evaluate(nom)
-#HYPER IMPORTANT !! C'est lui qui prouve que minibatch est plus rapide (faut que le dataset soit assez gross)
 """
